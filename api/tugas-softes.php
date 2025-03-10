@@ -34,25 +34,46 @@ $picture = $_FILES['picture'] ?? null;
 // Debug: Cek nilai input yang diproses
 error_log("Nama: $name, Harga: $price, Kategori: $category_id, Stok: $stock");
 
+// Aktifkan error reporting (hanya untuk debugging, jangan di produksi)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Debug: Cek semua data yang diterima dari request
+error_log("DEBUG: Data yang diterima: " . json_encode($_POST));
+
 // Validasi input
 if (empty($name)) {
+    error_log("ERROR: Nama produk kosong!");
     sendResponse(400, "Nama produk harus diisi", false);
 }
+
 if (empty($description)) {
+    error_log("ERROR: Deskripsi produk kosong!");
     sendResponse(400, "Deskripsi harus diisi", false);
 }
+
 if (empty($price) || $price <= 0) {
+    error_log("ERROR: Harga produk tidak valid! Price: " . json_encode($price));
     sendResponse(400, "Harga harus angka positif", false);
 }
+
 if (empty($category_id)) {
+    error_log("ERROR: Kategori produk kosong!");
     sendResponse(400, "Kategori produk harus dipilih", false);
 }
+
 if ($stock < 0) {
+    error_log("ERROR: Stok produk negatif! Stock: " . json_encode($stock));
     sendResponse(400, "Stok tidak boleh negatif", false);
 }
+
 if (empty($picture) || $picture['error'] != UPLOAD_ERR_OK) {
+    error_log("ERROR: Gambar produk tidak diunggah atau terjadi error! Picture: " . json_encode($picture));
     sendResponse(400, "Gambar produk harus diunggah", false);
 }
+
+// Debug: Jika semua validasi lolos
+error_log("DEBUG: Semua data valid, lanjutkan proses.");
 
 // Debug: Cek detail gambar yang diunggah
 error_log("File name: " . $picture['name'] . ", Size: " . $picture['size'] . " bytes");
